@@ -72,6 +72,8 @@ router.get('/', (req, res) => {
 // ---- UPDATE ---- 
 //---- PUT /expenses/:id ----
 router.put('/:id', (req, res) => {
+
+    const body = req.body || {};
     const expense = db
         .prepare('SELECT * FROM expenses WHERE id = ? AND user_id = ?')
         .get(req.params.id, req.user.id);
@@ -81,13 +83,13 @@ router.put('/:id', (req, res) => {
 
     }
 
-    const amount = req.body.amount ?? expense.amount;
-    const description = req.body.description ?? expense.description;
-    const date = req.boy.date ?? expense.date;
-    const category_id = req.bosy.category_id ?? expense.category_id;
+    const amount = body.amount ?? expense.amount;
+    const description = body.description ?? expense.description;
+    const date = body.date ?? expense.date;
+    const category_id = body.category_id ?? expense.category_id;
 
     db.prepare(
-        'UPDATE expenses SET amount = ?, description = ?, date= ?, category_id = ?, WHERE id = ? AND user_id = ?'
+        'UPDATE expenses SET amount = ?, description = ?, date= ?, category_id = ? WHERE id = ? AND user_id = ?'
     ).run(amount, description, date, category_id, req.params.id, req.user.id);
 
     res.json({ id: expense.id, amount, description, date, category_id});

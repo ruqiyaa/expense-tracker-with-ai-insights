@@ -24,7 +24,7 @@ router.post('/', (req, res) => {
 
 // ---GET /categories ->read 
 
-router.get('/', (res, req) => {
+router.get('/', (req, res) => {
     const rows = db
         .prepare('SELECT id, name FROM categories WHERE user_id = ?')
         .all(req.user.id);

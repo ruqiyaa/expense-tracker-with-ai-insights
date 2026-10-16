@@ -12,6 +12,7 @@ const summaryRoutes = require('./routes/summary');
 
 const app = express();
 app.use(express.json());
+app.use(express.static('public'));
 
 app.use('/auth', authRoutes);
 app.use('/categories', categoryRoutes);
@@ -23,10 +24,10 @@ app.get('/me', requireAuth, (req, res) => {
     res.json({ user: req.user})
 });
 
-app.get('/', (req, res) => {
-    res.json({ message : 'Expense tracker API is running'});
+// app.get('/', (req, res) => {
+//     res.json({ message : 'Expense tracker API is running'});
 
-});
+// });
 
 const PORT = process.env.PORT || 3000;
 

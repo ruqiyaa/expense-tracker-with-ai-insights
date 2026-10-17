@@ -10,6 +10,8 @@ const expenseRoutes = require('./routes/expense');
 
 const summaryRoutes = require('./routes/summary');
 
+const budgetRoutes = require('./routes/budgets');
+
 const app = express();
 app.use(express.json());
 app.use(express.static('public'));
@@ -18,6 +20,7 @@ app.use('/auth', authRoutes);
 app.use('/categories', categoryRoutes);
 app.use('/expenses', expenseRoutes);
 app.use('/summary', summaryRoutes);
+app.use('/budgets', budgetRoutes);
 
 //temp route
 app.get('/me', requireAuth, (req, res) => {

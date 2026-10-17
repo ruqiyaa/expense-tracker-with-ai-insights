@@ -5,6 +5,8 @@ import ExpenseForm from "../components/ExpenseForm";
 import ExpenseList from "../components/ExpenseList";
 import SpendingDonut from "../components/SpendingDonut";
 import TrendChart from "../components/TrendChart";
+import StatCard from "../components/StatCard";
+import Sidebar from "../components/Sidebar";
 
 export default function DashboardPage({ onLogout, theme, onToggleTheme }) {
   const [email, setEmail] = useState("");
@@ -80,36 +82,53 @@ export default function DashboardPage({ onLogout, theme, onToggleTheme }) {
   const total = summary ? summary.total : 0;
 
   return (
-    <main className="main">
-      <h1>Dashboard</h1>
-      <p>{email ? `Logged in as ${email}` : "Loading..."}</p>
-      <p className="message">{error}</p>
+    <div className="app">
+      <Sidebar email={email} onLogout={onLogout} />
 
-      <div className="panel">
-        <h2>Spending in breakdown</h2>
-        <SpendingDonut data={byCategory} total={total} />
-      </div>
+      <main className="main">
+        <h1>Dashboard</h1>
+        <p>{email ? `Logged in as ${email}` : "Loading..."}</p>
+        <p className="message">{error}</p>
 
-      <div className="panel">
-        <h2>Spending Trend</h2>
-        <TrendChart expenses={expenses} month={month} />
-      </div>
+        <div className="stats">
+          <StatCard label="Total Balance" soon />
+          <StatCard label="Monthly income" soon />
+          <StatCard label="Monthly Expenses" soon />
+          <StatCard label="Savings Goal" soon />
+        </div>
 
-      <div className="panel">
-        <h2>Expenses by Category</h2>
-        <CategoryBars data={byCategory} />
-      </div>
+        <div className="dash-grid">
+          <div className="panel">
+            <h2>Add an expense</h2>
+            <ExpenseForm categories={categories} onAdd={addExpense} />
+          </div>
 
-      <h2>Add an expense</h2>
-      <ExpenseForm categories={categories} onAdd={addExpense} />
+          <div className="panel">
+            <h2>Spending in breakdown</h2>
+            <SpendingDonut data={byCategory} total={total} />
+          </div>
 
-      <h2>Expenses this month</h2>
-      <ExpenseList expenses={expenses} onDelete={deleteExpense} />
+          <div className="panel">
+            <h2>Spending Trend</h2>
+            <TrendChart expenses={expenses} month={month} />
+          </div>
 
-      <button onClick={onLogout}>Log out</button>
-      <button onClick={onToggleTheme}>
-        {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
-      </button>
-    </main>
+          <div className="panel">
+            <h2>Expenses by Category</h2>
+            <CategoryBars data={byCategory} />
+          </div>
+        </div>
+
+        <div className="panel" style={{ marginTop: 16 }}>
+          <h2>Expenses this month</h2>
+          <ExpenseList expenses={expenses} onDelete={deleteExpense} />
+        </div>
+
+        <button onClick={onLogout}>Log out</button>
+        <button onClick={onToggleTheme}>
+          {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
+        </button>
+      </main>
+    </div>
   );
 }

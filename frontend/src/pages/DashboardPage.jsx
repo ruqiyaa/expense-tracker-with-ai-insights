@@ -6,7 +6,7 @@ import ExpenseList from "../components/ExpenseList";
 import SpendingDonut from "../components/SpendingDonut";
 import TrendChart from "../components/TrendChart";
 
-export default function DashboardPage({ onLogout }) {
+export default function DashboardPage({ onLogout, theme, onToggleTheme }) {
   const [email, setEmail] = useState("");
   const [month, setMonth] = useState(new Date().toISOString().slice(0, 7));
   const [summary, setSummary] = useState(null);
@@ -101,6 +101,9 @@ export default function DashboardPage({ onLogout }) {
       <ExpenseList expenses={expenses} onDelete={deleteExpense} />
 
       <button onClick={onLogout}>Log out</button>
+      <button onClick={onToggleTheme}>
+        {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
+      </button>
     </main>
   );
 }

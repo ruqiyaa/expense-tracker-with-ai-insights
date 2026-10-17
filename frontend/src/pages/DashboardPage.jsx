@@ -80,19 +80,25 @@ export default function DashboardPage({ onLogout, theme, onToggleTheme }) {
   const total = summary ? summary.total : 0;
 
   return (
-    <main className="card">
+    <main className="main">
       <h1>Dashboard</h1>
       <p>{email ? `Logged in as ${email}` : "Loading..."}</p>
       <p className="message">{error}</p>
 
-      <h2>Spending in breakdown</h2>
-      <SpendingDonut data={byCategory} total={total} />
+      <div className="panel">
+        <h2>Spending in breakdown</h2>
+        <SpendingDonut data={byCategory} total={total} />
+      </div>
 
-      <h2>Spending Trend</h2>
-      <TrendChart expenses={expenses} month={month} />
+      <div className="panel">
+        <h2>Spending Trend</h2>
+        <TrendChart expenses={expenses} month={month} />
+      </div>
 
-      <h2>Expenses by Category</h2>
-      <CategoryBars data={byCategory} />
+      <div className="panel">
+        <h2>Expenses by Category</h2>
+        <CategoryBars data={byCategory} />
+      </div>
 
       <h2>Add an expense</h2>
       <ExpenseForm categories={categories} onAdd={addExpense} />

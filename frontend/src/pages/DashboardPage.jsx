@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { api } from "../api";
 import CategoryBars from "../components/CategoryBars";
+import ExpenseForm from "../components/ExpenseForm";
+import ExpenseList from "../components/ExpenseList";
 
 export default function DashboardPage({ onLogout }) {
   const [email, setEmail] = useState("");
@@ -8,16 +10,25 @@ export default function DashboardPage({ onLogout }) {
   const [summary, setSummary] = useState(null);
   const [error, setError] = useState("");
 
+  const [categories, setCategories] = useState([]);
+  const [expenses, setExpenses] = useState([]);
+
+  //-----SUMMARY-----//
   async function loadSummary() {
     try {
       setError("");
-      const data = await api(`/summary?month=${month}`);
-      setSummary(data);
+      const [s, e] = await Promise.all([
+        api(`/summary?month=${month}`),
+        api(`/expenses?month=${month}`),
+      ]);
+      setSummary(s);
+      setExpenses(e);
     } catch (err) {
       setError(err.message);
     }
   }
 
+  //----LOAD ONCE WHEN PAGE REFRESHES----//
   useEffect(() => {
     api("/me")
       .then((data) => setEmail(data.user.email))
@@ -25,11 +36,43 @@ export default function DashboardPage({ onLogout }) {
         console.log("me failed", err);
         onLogout();
       });
+    loadCategories();
   }, []);
 
   useEffect(() => {
     loadSummary();
   }, [month]);
+  //-----CATEGORIES-----//
+  //api call to load the categories array..called when the page loads
+  async function loadCategories() {
+    try {
+      setCategories(await api("/categories"));
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+  //-----EXPENSES-----//
+  //function the form will call
+  async function addExpense(data) {
+    try {
+      await api("/expenses", "POST", data);
+      const newMonth = data.date.slice(0, 7);
+      if (newMonth === month) await loadSummary();
+      else setMonth(newMonth);
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
+  //-----DELETE EXPENSE-----//
+  async function deleteExpense(id) {
+    try {
+      await api(`/expenses/${id}`, "DELETE");
+      await loadSummary();
+    } catch (err) {
+      setError(err.message);
+    }
+  }
 
   const byCategory = summary ? summary.byCategory : [];
 
@@ -41,6 +84,12 @@ export default function DashboardPage({ onLogout }) {
 
       <h2>Expenses by Category</h2>
       <CategoryBars data={byCategory} />
+
+      <h2>Add an expense</h2>
+      <ExpenseForm categories={categories} onAdd={addExpense} />
+
+      <h2>Expenses this month</h2>
+      <ExpenseList expenses={expenses} onDelete={deleteExpense} />
 
       <button onClick={onLogout}>Log out</button>
     </main>

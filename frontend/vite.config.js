@@ -10,6 +10,7 @@ export default defineConfig({
       '/categories' : 'http://localhost:3000',
       '/expenses' : 'http://localhost:3000',
       '/summary' : 'http://localhost:3000',
+      '/budgets' : 'http://localhost:3000',
     },
   },
 });

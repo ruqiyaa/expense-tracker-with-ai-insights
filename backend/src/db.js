@@ -40,6 +40,25 @@ db.exec(`
     UNIQUE (user_id, month),
     FOREIGN KEY (user_id) REFERENCES users(id)
     );
+
+    CREATE TABLE IF NOT EXISTS income (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    amount REAL NOT NULL,
+    source TEXT,
+    date TEXT NOT NULL,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+    );
+
+    CREATE TABLE IF NOT EXISTS goals (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL UNIQUE,
+    name TEXT NOT NULL,
+    target REAL NOT NULL,
+    saved REAL NOT NULL DEFAULT 0,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+    );
 `);
 
 module.exports = db;

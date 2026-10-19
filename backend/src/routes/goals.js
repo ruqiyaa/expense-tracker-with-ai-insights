@@ -38,4 +38,10 @@ router.put('/', (req, res) => {
    res.json({ name, target, saved})
 })
 
+//-----DELETE-----//
+router.delete('/', (req, res) => {
+    db.prepare('DELETE FROM goals WHERE user_id = ?').all(req.user.id);
+    res.json({ message: 'deleted'});
+})
+
 module.exports = router;

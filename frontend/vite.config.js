@@ -13,6 +13,7 @@ export default defineConfig({
       '/budgets' : 'http://localhost:3000',
       '/income' : 'http://localhost:3000',
       '/goals' : 'http://localhost:3000',
+      '/insights': 'http://localhost:3000',
     },
   },
 });

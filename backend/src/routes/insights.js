@@ -1,6 +1,6 @@
 const express = require('express');
 const requireAuth = require('../middleware/auth');
-const { getMonthlySummary, previousMonth } = require('../services/summary');
+const { getFacts } = require('../services/summary');
 const { getInsights } = require('../services/ai');
 
 const router = express.Router();
@@ -14,15 +14,21 @@ router.post('/', async (req, res) => {
     return res.status(400).json({ error: 'month is required, format YYYY-MM' });
   }
 
-  const current = getMonthlySummary(req.user.id, month);
-  const previous = getMonthlySummary(req.user.id, previousMonth(month));
+  const facts = getFacts(req.user.id, month);
 
-  if (current.count === 0) {
-    return res.json({ month, insights: 'No expenses recorded for this month yet.' });
+  if (facts.transactions === 0) {
+    return res.json({
+      month,
+      insights: {
+        headline: 'No expenses recorded for this month yet.',
+        observations: [],
+        tips: [],
+      },
+    });
   }
 
   try {
-    const insights = await getInsights(current, previous);
+    const insights = await getInsights(facts);
     res.json({ month, insights });
   } catch (err) {
     console.error('AI error:', err.message);

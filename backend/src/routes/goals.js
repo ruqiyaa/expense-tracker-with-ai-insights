@@ -19,7 +19,7 @@ router.get('/', (req, res) => {
 router.put('/', (req, res) => {
     const { name, target, saved } = req.body || {} ;
 
-    if(!name || typeof target !== 'number' || target < 0) {
+    if(!name || typeof target !== 'number' || target <= 0) {
         return res.status(400).json({ error : 'name and target above 0 are required'});
     }
 
@@ -40,7 +40,7 @@ router.put('/', (req, res) => {
 
 //-----DELETE-----//
 router.delete('/', (req, res) => {
-    db.prepare('DELETE FROM goals WHERE user_id = ?').all(req.user.id);
+    db.prepare('DELETE FROM goals WHERE user_id = ?').run(req.user.id);
     res.json({ message: 'deleted'});
 })
 

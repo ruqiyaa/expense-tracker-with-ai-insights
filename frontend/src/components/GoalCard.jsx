@@ -78,12 +78,16 @@ export default function GoalCard({ goal, onSave, onDelete }) {
       </form>
 
       {hasGoal && (
-        <button type="button" className="small danger" onClick={onDelete}>
+        <button
+          type="button"
+          className="small danger goal-delete"
+          onClick={onDelete}
+        >
           Delete goal
         </button>
       )}
 
-      <p className="muted">
+      <p className="muted goal-note">
         You can have one goal at a time. Delete it to set a new one.
       </p>
     </div>

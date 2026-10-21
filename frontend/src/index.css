@@ -220,6 +220,11 @@ a.nav-item:not(.active) { color: var(--muted); }
 .recharts-cartesian-grid line { stroke: var(--border); }
 
 /* ========== 9. SMALL SCREENS (always keep these LAST) ========== */
+
+@media (min-width: 1500px) {
+  .dash-grid { grid-template-columns: 1fr 1fr 1fr; }
+}
+
 @media (max-width: 900px) {
   .sidebar { display: none; }
   .dash-grid { grid-template-columns: 1fr; }
@@ -231,7 +236,16 @@ a.nav-item:not(.active) { color: var(--muted); }
 }
 
 
+
 .total { font-size: 1.4rem; font-weight: 800; margin: 0 0 8px; }
+
+.goal-delete {
+  margin-top: 12px;
+}
+
+.goal-note {
+  margin-top: 12px;
+}
 
 /* INSIGHTS */
 
@@ -239,6 +253,11 @@ a.nav-item:not(.active) { color: var(--muted); }
   margin-top: 14px;
   max-width: 90ch;
   line-height: 1.6;
+}
+
+.insights-banner {
+  margin-bottom: 16px;
+  border-left: 4px solid var(--accent);
 }
 
 .insights-headline {

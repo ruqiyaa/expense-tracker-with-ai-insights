@@ -9,7 +9,7 @@ router.use(requireAuth);
 router.get('/', (req, res) => {
     const row = db
         .prepare('SELECT name, target, saved FROM goals WHERE user_id = ?')
-        .all(req.user.id);
+        .get(req.user.id);
 
 
     res.json(row || {name:'', target: 0, saved: 0})

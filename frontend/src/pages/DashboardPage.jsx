@@ -7,6 +7,7 @@ import SpendingDonut from "../components/SpendingDonut";
 import TrendChart from "../components/TrendChart";
 import StatCard from "../components/StatCard";
 import Sidebar from "../components/Sidebar";
+import BudgetCard from "../components/BudgetCard";
 
 export default function DashboardPage({ onLogout, theme, onToggleTheme }) {
   const [email, setEmail] = useState("");
@@ -17,16 +18,20 @@ export default function DashboardPage({ onLogout, theme, onToggleTheme }) {
   const [categories, setCategories] = useState([]);
   const [expenses, setExpenses] = useState([]);
 
+  const [budget, setBudget] = useState(0);
+
   //-----SUMMARY-----//
   async function loadSummary() {
     try {
       setError("");
-      const [s, e] = await Promise.all([
+      const [s, e, b] = await Promise.all([
         api(`/summary?month=${month}`),
         api(`/expenses?month=${month}`),
+        api(`/budgets?month=${month}`),
       ]);
       setSummary(s);
       setExpenses(e);
+      setBudget(b.amount);
     } catch (err) {
       setError(err.message);
     }
@@ -78,56 +83,86 @@ export default function DashboardPage({ onLogout, theme, onToggleTheme }) {
     }
   }
 
+  //-----SAVE BUDGET-----//
+  async function saveBudget(amount) {
+    try {
+      await api("/budgets", "PUT", { month, amount });
+      setBudget(amount);
+    } catch (err) {
+      setError(e.message);
+    }
+  }
+
   const byCategory = summary ? summary.byCategory : [];
   const total = summary ? summary.total : 0;
 
+  const today = new Date().toLocaleDateString("en-IN", { dateStyle: "long" });
+  const name = email ? email.split("@")[0] : "";
+
+  ///////////////////////
   return (
     <div className="app">
       <Sidebar email={email} onLogout={onLogout} />
 
       <main className="main">
-        <h1>Dashboard</h1>
-        <p>{email ? `Logged in as ${email}` : "Loading..."}</p>
+        <div className="top-bar">
+          <div>
+            <h1>Welcome back{name ? `, ${name}` : ""}!</h1>
+            <span className="muted">{today}</span>
+          </div>
+
+          <div className="top-actions">
+            <input
+              type="month"
+              value={month}
+              onChange={(e) => setMonth(e.target.value)}
+            />
+            <button className="small secondary" onClick={onToggleTheme}>
+              {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
+            </button>
+          </div>
+        </div>
+
         <p className="message">{error}</p>
 
         <div className="stats">
           <StatCard label="Total Balance" soon />
-          <StatCard label="Monthly income" soon />
-          <StatCard label="Monthly Expenses" soon />
+          <StatCard label="Monthly Income" soon />
+          <StatCard label="Monthly Expenses" value={total} />
           <StatCard label="Savings Goal" soon />
         </div>
 
         <div className="dash-grid">
           <div className="panel">
-            <h2>Add an expense</h2>
+            <h3>Add an expense</h3>
             <ExpenseForm categories={categories} onAdd={addExpense} />
           </div>
 
           <div className="panel">
-            <h2>Spending in breakdown</h2>
+            <h3>Budget Used</h3>
+            <BudgetCard budget={budget} spent={total} onSave={saveBudget} />
+          </div>
+
+          <div className="panel">
+            <h3>Spending Breakdown</h3>
             <SpendingDonut data={byCategory} total={total} />
           </div>
 
           <div className="panel">
-            <h2>Spending Trend</h2>
+            <h3>Spending Trend</h3>
             <TrendChart expenses={expenses} month={month} />
           </div>
 
           <div className="panel">
-            <h2>Expenses by Category</h2>
+            <h3>Expenses by Category</h3>
             <CategoryBars data={byCategory} />
           </div>
         </div>
 
         <div className="panel" style={{ marginTop: 16 }}>
-          <h2>Expenses this month</h2>
+          <h3>Expenses this month</h3>
           <ExpenseList expenses={expenses} onDelete={deleteExpense} />
         </div>
-
-        <button onClick={onLogout}>Log out</button>
-        <button onClick={onToggleTheme}>
-          {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
-        </button>
       </main>
     </div>
   );

@@ -118,6 +118,9 @@ button.danger {
 .nav-item.disabled { opacity: 0.55; }
 .nav-item small { font-size: 0.7rem; }
 
+a.nav-item { text-decoration: none; }
+a.nav-item:not(.active) { color: var(--muted); }
+
 .sidebar-bottom { margin-top: auto; display: flex; flex-direction: column; gap: 8px; }
 .user-email { font-size: 0.85rem; color: var(--muted); word-break: break-all; }
 

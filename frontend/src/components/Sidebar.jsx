@@ -1,11 +1,27 @@
+import { NavLink } from "react-router-dom";
+
 export default function Sidebar({ email, onLogout }) {
-  const soon = ["Transactions", "Budgets", "Accounts", "Goals", "Settings"];
+  const soon = ["Budgets", "Goals", "Settings"];
 
   return (
     <aside className="sidebar">
       <div className="brand">EXPENSE TRACKER</div>
 
-      <div className="nav-item active">Dashboard</div>
+      <NavLink
+        to="/"
+        end
+        className={({ isActive }) => "nav-item" + (isActive ? " active" : "")}
+      >
+        Dashboard
+      </NavLink>
+
+      <NavLink
+        to="/transactions"
+        className={({ isActive }) => "nav-item" + (isActive ? " active" : "")}
+      >
+        Transactions
+      </NavLink>
+
       {soon.map((name) => (
         <div key={name} className="nav-item disabled">
           {name} <small>soon</small>

@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import Layout from "./components/Layout";
 import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
+import TransactionsPage from "./pages/TransactionsPage";
 
 export default function App() {
   const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem("token"));
@@ -22,11 +25,21 @@ export default function App() {
   }
 
   return loggedIn ? (
-    <DashboardPage
-      onLogout={handleLogout}
-      theme={theme}
-      onToggleTheme={toggleTheme}
-    />
+    <Routes>
+      <Route
+        element={
+          <Layout
+            onLogout={handleLogout}
+            theme={theme}
+            onToggleTheme={toggleTheme}
+          />
+        }
+      >
+        <Route path="/" element={<DashboardPage />} />
+        <Route path="/transactions" element={<TransactionsPage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Route>
+    </Routes>
   ) : (
     <LoginPage onLogin={() => setLoggedIn(true)} />
   );

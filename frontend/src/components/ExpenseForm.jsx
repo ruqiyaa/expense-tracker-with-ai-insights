@@ -4,7 +4,7 @@ export default function ExpenseForm({ categories, onAdd }) {
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
-  const [categoryId, setCategoryId] = useState("");
+  const [categoryName, setCategoryName] = useState("");
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -12,7 +12,7 @@ export default function ExpenseForm({ categories, onAdd }) {
       amount: parseFloat(amount),
       description,
       date,
-      category_id: categoryId ? Number(categoryId) : null,
+      category_name: categoryName.trim(),
     });
     setAmount("");
     setDescription("");
@@ -43,17 +43,18 @@ export default function ExpenseForm({ categories, onAdd }) {
         required
       />
 
-      <select
-        value={categoryId}
-        onChange={(e) => setCategoryId(e.target.value)}
-      >
-        <option value="">No category</option>
+      <input
+        list="category-options"
+        placeholder="Category (pick or enter)"
+        value={categoryName}
+        onChange={(e) => setCategoryName(e.target.value)}
+      />
+
+      <datalist id="category-options">
         {categories.map((c) => (
-          <option key={c.id} value={c.id}>
-            {c.name}
-          </option>
+          <option key={c.id} value={c.name} />
         ))}
-      </select>
+      </datalist>
       <button type="submit">Add expense</button>
     </form>
   );

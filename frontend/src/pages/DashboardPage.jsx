@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { api } from "../api";
+import { useOutletContext } from "react-router-dom";
 import CategoryBars from "../components/CategoryBars";
 import ExpenseForm from "../components/ExpenseForm";
 import ExpenseList from "../components/ExpenseList";
@@ -11,8 +12,9 @@ import BudgetCard from "../components/BudgetCard";
 import IncomeForm from "../components/IncomeForm";
 import GoalCard from "../components/GoalCard";
 
-export default function DashboardPage({ onLogout, theme, onToggleTheme }) {
-  const [email, setEmail] = useState("");
+export default function DashboardPage() {
+  const { email, theme, onToggleTheme } = useOutletContext();
+  //const [email, setEmail] = useState("");
   const [month, setMonth] = useState(new Date().toISOString().slice(0, 7));
   const [summary, setSummary] = useState(null);
   const [error, setError] = useState("");
@@ -24,7 +26,17 @@ export default function DashboardPage({ onLogout, theme, onToggleTheme }) {
 
   const [income, setIncome] = useState(0);
 
-  const [goal, setGoal] = useState({ name: "", target: 0, saved: 0 });
+  const [goal, setGoal] = useState(() => {
+    const savedGoal = localStorage.getItem("savingsGoal");
+
+    return savedGoal
+      ? JSON.parse(savedGoal)
+      : {
+          name: "",
+          target: 0,
+          saved: 0,
+        };
+  });
 
   //-----SUMMARY-----//
   async function loadSummary() {
@@ -49,12 +61,12 @@ export default function DashboardPage({ onLogout, theme, onToggleTheme }) {
 
   //----LOAD ONCE WHEN PAGE REFRESHES----//
   useEffect(() => {
-    api("/me")
-      .then((data) => setEmail(data.user.email))
-      .catch((err) => {
-        console.log("me failed", err);
-        onLogout();
-      });
+    // api("/me")
+    //   .then((data) => setEmail(data.user.email))
+    //   .catch((err) => {
+    //     console.log("me failed", err);
+    //     onLogout();
+    //   });
     loadCategories();
   }, []);
 
@@ -71,11 +83,31 @@ export default function DashboardPage({ onLogout, theme, onToggleTheme }) {
     }
   }
 
-  //-----EXPENSES-----//
+  //-----ADD EXPENSES-----//
   //function the form will call
   async function addExpense(data) {
     try {
-      await api("/expenses", "POST", data);
+      const { category_name, ...expenseData } = data;
+      let category_id = null;
+
+      if (category_name) {
+        const existing = categories.find(
+          (c) => c.name.toLowerCase() === category_name.toLowerCase(),
+        );
+
+        if (existing) {
+          category_id = existing.id;
+        } else {
+          const created = await api("/categories", "POST", {
+            name: category_name,
+          });
+          category_id = created.id;
+          await loadCategories();
+        }
+      }
+
+      await api("/expenses", "POST", { ...expenseData, category_id });
+
       const newMonth = data.date.slice(0, 7);
       if (newMonth === month) await loadSummary();
       else setMonth(newMonth);
@@ -144,9 +176,7 @@ export default function DashboardPage({ onLogout, theme, onToggleTheme }) {
 
   ///////////////////////
   return (
-    <div className="app">
-      <Sidebar email={email} onLogout={onLogout} />
-
+    <>
       <main className="main">
         <div className="top-bar">
           <div>
@@ -217,6 +247,6 @@ export default function DashboardPage({ onLogout, theme, onToggleTheme }) {
           <ExpenseList expenses={expenses} onDelete={deleteExpense} />
         </div>
       </main>
-    </div>
+    </>
   );
 }

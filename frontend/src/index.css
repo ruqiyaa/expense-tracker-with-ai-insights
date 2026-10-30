@@ -226,8 +226,6 @@ button.danger {
 @media (max-width: 600px) {
   .stats { grid-template-columns: 1fr; }
 }
-@media (min-width: 1700px) {
-  .dash-grid { grid-template-columns: 1fr 1fr 1fr; }
-}
+
 
 .total { font-size: 1.4rem; font-weight: 800; margin: 0 0 8px; }

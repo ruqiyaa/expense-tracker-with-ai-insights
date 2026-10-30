@@ -8,6 +8,7 @@ import TrendChart from "../components/TrendChart";
 import StatCard from "../components/StatCard";
 import Sidebar from "../components/Sidebar";
 import BudgetCard from "../components/BudgetCard";
+import IncomeForm from "../components/IncomeForm";
 
 export default function DashboardPage({ onLogout, theme, onToggleTheme }) {
   const [email, setEmail] = useState("");
@@ -20,18 +21,22 @@ export default function DashboardPage({ onLogout, theme, onToggleTheme }) {
 
   const [budget, setBudget] = useState(0);
 
+  const [income, setIncome] = useState(0);
+
   //-----SUMMARY-----//
   async function loadSummary() {
     try {
       setError("");
-      const [s, e, b] = await Promise.all([
+      const [s, e, b, inc] = await Promise.all([
         api(`/summary?month=${month}`),
         api(`/expenses?month=${month}`),
         api(`/budgets?month=${month}`),
+        api(`/income?month=${month}`),
       ]);
       setSummary(s);
       setExpenses(e);
       setBudget(b.amount);
+      setIncome(inc.total);
     } catch (err) {
       setError(err.message);
     }
@@ -93,6 +98,18 @@ export default function DashboardPage({ onLogout, theme, onToggleTheme }) {
     }
   }
 
+  //-----INCOME-----//
+  async function addIncome(data) {
+    try {
+      await api("/income", "POST", data);
+      const newMonth = data.date.slice(0, 7);
+      if (newMonth === month) await loadSummary();
+      else setMonth(newMonth);
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
   const byCategory = summary ? summary.byCategory : [];
   const total = summary ? summary.total : 0;
 
@@ -126,7 +143,7 @@ export default function DashboardPage({ onLogout, theme, onToggleTheme }) {
         <p className="message">{error}</p>
 
         <div className="stats">
-          <StatCard label="Total Balance" soon />
+          <StatCard label="Total Balance" value={income - total} />
           <StatCard label="Monthly Income" soon />
           <StatCard label="Monthly Expenses" value={total} />
           <StatCard label="Savings Goal" soon />
@@ -156,6 +173,11 @@ export default function DashboardPage({ onLogout, theme, onToggleTheme }) {
           <div className="panel">
             <h3>Expenses by Category</h3>
             <CategoryBars data={byCategory} />
+          </div>
+
+          <div className="panel">
+            <h3>Add income</h3>
+            <IncomeForm onAdd={addIncome} />
           </div>
         </div>
 

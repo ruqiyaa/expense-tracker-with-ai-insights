@@ -11,6 +11,7 @@ export default defineConfig({
       '/expenses' : 'http://localhost:3000',
       '/summary' : 'http://localhost:3000',
       '/budgets' : 'http://localhost:3000',
+      '/income' : 'http://localhost:3000',
     },
   },
 });

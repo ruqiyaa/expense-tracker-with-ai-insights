@@ -15,6 +15,13 @@ router.post('/', (req, res) => {
         return res.status(400).json({error : 'name is required'});
     }
 
+    const existing = db
+        .prepare('SELECT id FROM categories WHERE user_id = ? AND lower(name) = lower(?)')
+        .get(req.user.id, name);
+     if (existing) {
+        return res.status(409).json({ error: 'category already exists'});
+     }
+
     const result = db
         .prepare('INSERT INTO categories (user_id, name) VALUES (?, ?)' )
         .run(req.user.id, name);

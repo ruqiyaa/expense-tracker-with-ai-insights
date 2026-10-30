@@ -17,7 +17,7 @@ async function call(method, path, body, token) {
 }
 
 async function main() {
-  const creds = { email: 'test@example.com', password: 'secret123' };
+  const creds = { email: 'testguy1@gmail.com', password: 'testguy1' };
 
   // log in, or register if the user doesn't exist yet
   let auth = await call('POST', '/auth/login', creds);

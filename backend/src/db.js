@@ -1,6 +1,6 @@
 const Database = require('better-sqlite3');
 
-const db = new Database('expense.db');
+const db = new Database('expenses.db');
 
 db.pragma('foreign_keys = ON');
 
@@ -13,11 +13,11 @@ db.exec(`
     created_at TEXT DEFAULT CURRENT_TIMESTAMP
     );
     
-    CREATE TABLE IF NOT EXISTS category(
+    CREATE TABLE IF NOT EXISTS categories(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
     name TEXT NOT NULL,
-    FOREIGN KEY(user_id) REFERENCES userd(id)
+    FOREIGN KEY(user_id) REFERENCES users(id)
     );
     
     CREATE TABLE IF NOT EXISTS expenses(

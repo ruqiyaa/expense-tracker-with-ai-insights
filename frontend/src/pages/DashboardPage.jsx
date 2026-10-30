@@ -9,6 +9,7 @@ import StatCard from "../components/StatCard";
 import Sidebar from "../components/Sidebar";
 import BudgetCard from "../components/BudgetCard";
 import IncomeForm from "../components/IncomeForm";
+import GoalCard from "../components/GoalCard";
 
 export default function DashboardPage({ onLogout, theme, onToggleTheme }) {
   const [email, setEmail] = useState("");
@@ -23,20 +24,24 @@ export default function DashboardPage({ onLogout, theme, onToggleTheme }) {
 
   const [income, setIncome] = useState(0);
 
+  const [goal, setGoal] = useState({ name: "", target: 0, saved: 0 });
+
   //-----SUMMARY-----//
   async function loadSummary() {
     try {
       setError("");
-      const [s, e, b, inc] = await Promise.all([
+      const [s, e, b, inc, g] = await Promise.all([
         api(`/summary?month=${month}`),
         api(`/expenses?month=${month}`),
         api(`/budgets?month=${month}`),
         api(`/income?month=${month}`),
+        api("/goals"),
       ]);
       setSummary(s);
       setExpenses(e);
       setBudget(b.amount);
       setIncome(inc.total);
+      setGoal(g);
     } catch (err) {
       setError(err.message);
     }
@@ -65,6 +70,7 @@ export default function DashboardPage({ onLogout, theme, onToggleTheme }) {
       setError(err.message);
     }
   }
+
   //-----EXPENSES-----//
   //function the form will call
   async function addExpense(data) {
@@ -94,7 +100,7 @@ export default function DashboardPage({ onLogout, theme, onToggleTheme }) {
       await api("/budgets", "PUT", { month, amount });
       setBudget(amount);
     } catch (err) {
-      setError(e.message);
+      setError(err.message);
     }
   }
 
@@ -105,6 +111,26 @@ export default function DashboardPage({ onLogout, theme, onToggleTheme }) {
       const newMonth = data.date.slice(0, 7);
       if (newMonth === month) await loadSummary();
       else setMonth(newMonth);
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
+  //-----SAVE GOAL-----//
+  async function saveGoal(data) {
+    try {
+      await api("/goals", "PUT", data);
+      setGoal(data);
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
+  //-----DELETE GOAL-----//
+  async function deleteGoal() {
+    try {
+      await api("/goals", "DELETE");
+      setGoal({ name: "", target: 0, saved: 0 });
     } catch (err) {
       setError(err.message);
     }
@@ -135,7 +161,7 @@ export default function DashboardPage({ onLogout, theme, onToggleTheme }) {
               onChange={(e) => setMonth(e.target.value)}
             />
             <button className="small secondary" onClick={onToggleTheme}>
-              {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
+              {theme === "dark" ? "☀️" : "🌙"}
             </button>
           </div>
         </div>
@@ -144,15 +170,20 @@ export default function DashboardPage({ onLogout, theme, onToggleTheme }) {
 
         <div className="stats">
           <StatCard label="Total Balance" value={income - total} />
-          <StatCard label="Monthly Income" soon />
+          <StatCard label="Monthly Income" value={income} />
           <StatCard label="Monthly Expenses" value={total} />
-          <StatCard label="Savings Goal" soon />
+          <StatCard label="Savings Goal" value={goal.saved} />
         </div>
 
         <div className="dash-grid">
           <div className="panel">
             <h3>Add an expense</h3>
             <ExpenseForm categories={categories} onAdd={addExpense} />
+          </div>
+
+          <div className="panel">
+            <h3>Savings Goal</h3>
+            <GoalCard goal={goal} onSave={saveGoal} onDelete={deleteGoal} />
           </div>
 
           <div className="panel">

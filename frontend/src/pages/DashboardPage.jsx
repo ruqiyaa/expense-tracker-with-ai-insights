@@ -4,6 +4,7 @@ import CategoryBars from "../components/CategoryBars";
 import ExpenseForm from "../components/ExpenseForm";
 import ExpenseList from "../components/ExpenseList";
 import SpendingDonut from "../components/SpendingDonut";
+import TrendChart from "../components/TrendChart";
 
 export default function DashboardPage({ onLogout }) {
   const [email, setEmail] = useState("");
@@ -86,6 +87,9 @@ export default function DashboardPage({ onLogout }) {
 
       <h2>Spending in breakdown</h2>
       <SpendingDonut data={byCategory} total={total} />
+
+      <h2>Spending Trend</h2>
+      <TrendChart expenses={expenses} month={month} />
 
       <h2>Expenses by Category</h2>
       <CategoryBars data={byCategory} />

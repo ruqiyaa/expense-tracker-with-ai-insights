@@ -11,6 +11,7 @@ import Sidebar from "../components/Sidebar";
 import BudgetCard from "../components/BudgetCard";
 import IncomeForm from "../components/IncomeForm";
 import GoalCard from "../components/GoalCard";
+import InsightsCard from "../components/InsightsCard";
 
 export default function DashboardPage() {
   const { email, theme, onToggleTheme } = useOutletContext();
@@ -205,6 +206,10 @@ export default function DashboardPage() {
           <StatCard label="Savings Goal" value={goal.saved} />
         </div>
 
+        <div className="panel insights-banner">
+          <InsightsCard month={month} />
+        </div>
+
         <div className="dash-grid">
           <div className="panel">
             <h3>Add an expense</h3>
@@ -214,11 +219,6 @@ export default function DashboardPage() {
           <div className="panel">
             <h3>Savings Goal</h3>
             <GoalCard goal={goal} onSave={saveGoal} onDelete={deleteGoal} />
-          </div>
-
-          <div className="panel">
-            <h3>Budget Used</h3>
-            <BudgetCard budget={budget} spent={total} onSave={saveBudget} />
           </div>
 
           <div className="panel">
@@ -240,11 +240,11 @@ export default function DashboardPage() {
             <h3>Add income</h3>
             <IncomeForm onAdd={addIncome} />
           </div>
-        </div>
 
-        <div className="panel" style={{ marginTop: 16 }}>
-          <h3>Expenses this month</h3>
-          <ExpenseList expenses={expenses} onDelete={deleteExpense} />
+          <div className="panel">
+            <h3>Budget Used</h3>
+            <BudgetCard budget={budget} spent={total} onSave={saveBudget} />
+          </div>
         </div>
       </main>
     </>

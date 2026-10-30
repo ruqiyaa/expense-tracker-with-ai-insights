@@ -235,28 +235,33 @@ a.nav-item:not(.active) { color: var(--muted); }
 
 /* INSIGHTS */
 
-.insights-banner {
-  margin-bottom: 16px;
-  border-left: 4px solid var(--accent);
-}
-
-.insights-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.insights-head h3 {
-  margin: 0 0 4px;
-}
-
 .insights {
-  white-space: pre-wrap;
-  line-height: 1.6;
-  margin: 14px 0 0;
+  margin-top: 14px;
   max-width: 90ch;
+  line-height: 1.6;
+}
+
+.insights-headline {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0 0 12px;
+}
+
+.insights h4 {
+  margin: 14px 0 6px;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.insights ul {
+  list-style: disc;
+  padding-left: 20px;
+}
+
+.insights li {
+  margin-bottom: 6px;
 }
 
 .ai-btn {

@@ -31,6 +31,15 @@ db.exec(`
     FOREIGN KEY(user_id) REFERENCES users(id),
     FOREIGN KEY(category_id) REFERENCES categories(id)
     );
+
+    CREATE TABLE IF NOT EXISTS budgets (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    month TEXT NOT NULL,
+    amount REAL NOT NULL,
+    UNIQUE (user_id, month),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+    );
 `);
 
 module.exports = db;

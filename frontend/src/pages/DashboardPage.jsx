@@ -3,6 +3,7 @@ import { api } from "../api";
 import CategoryBars from "../components/CategoryBars";
 import ExpenseForm from "../components/ExpenseForm";
 import ExpenseList from "../components/ExpenseList";
+import SpendingDonut from "../components/SpendingDonut";
 
 export default function DashboardPage({ onLogout }) {
   const [email, setEmail] = useState("");
@@ -75,12 +76,16 @@ export default function DashboardPage({ onLogout }) {
   }
 
   const byCategory = summary ? summary.byCategory : [];
+  const total = summary ? summary.total : 0;
 
   return (
     <main className="card">
       <h1>Dashboard</h1>
       <p>{email ? `Logged in as ${email}` : "Loading..."}</p>
       <p className="message">{error}</p>
+
+      <h2>Spending in breakdown</h2>
+      <SpendingDonut data={byCategory} total={total} />
 
       <h2>Expenses by Category</h2>
       <CategoryBars data={byCategory} />
